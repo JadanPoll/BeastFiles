@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>100GIGSFORYOURHEADTOP</title>
+  <style>
+    /* Global Styles */
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #1a1a1a;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .container {
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #333;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background-color: #1a1a1a;
+    }
+    tr:hover {
+      background-color: #333;
+    }
+    .icon {
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .expand-icon {
+      cursor: pointer;
+      margin-right: 5px;
+      font-size: 12px;
+      vertical-align: middle;
+    }
+    .download-btn {
+      background-color: #ffcc00;
+      color: #000;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .download-btn:hover {
+      background-color: #e6b800;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>100GIGSFORYOURHEADTOP</h1>
+  </header>
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Date and Time</th>
+          <th>Size</th>
+          <th>Type</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="file-table">
+        <!-- Table rows will be populated here by JS -->
+      </tbody>
+    </table>
+  </div>
+  <script>
+    // Utility to format file sizes.
+    function formatSizeUnits(bytes) {
+      if (bytes >= 1073741824) {
+        return (bytes / 1073741824).toFixed(2) + ' GB';
+      } else if (bytes >= 1048576) {
+        return (bytes / 1048576).toFixed(2) + ' MB';
+      } else if (bytes >= 1024) {
+        return (bytes / 1024).toFixed(2) + ' KB';
+      } else if (bytes > 1) {
+        return bytes + ' bytes';
+      } else if (bytes == 1) {
+        return bytes + ' byte';
+      } else {
+        return '0 bytes';
+      }
+    }
+    
+    // Recursively build table rows from directory data.
+    function buildRows(items, level = 0) {
+      let html = '';
+      items.forEach(item => {
+        const indent = '&nbsp;'.repeat(level * 4);
+        const date = new Date(item.date).toLocaleString();
+        const size = item.size ? formatSizeUnits(item.size) : '-';
+        let icon = '';
+        let action = '';
+        
+        if (item.type === 'FOLDER') {
+          // Folder icon with an expandable arrow (static example).
+          icon = '<span class="expand-icon">&#9654;</span> <span class="icon">&#128193;</span>';
+        } else {
+          // File icon.
+          icon = '<span class="icon">&#128196;</span>';
+          // Download link.
+          action = `<a class="download-btn" href="${item.path}" download>DOWNLOAD</a>`;
+        }
+        
+        html += `<tr>
+                    <td>${indent}${icon} ${item.name}</td>
+                    <td>${date}</td>
+                    <td>${size}</td>
+                    <td>${item.type}</td>
+                    <td>${action}</td>
+                 </tr>`;
+                 
+        // If the item is a folder with children, add them recursively.
+        if (item.type === 'FOLDER' && item.children && item.children.length > 0) {
+          html += buildRows(item.children, level + 1);
+        }
+      });
+      return html;
+    }
+    
+    // Fetch the directory structure from the server.
+    fetch('/files')
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.getElementById('file-table');
+        tableBody.innerHTML = buildRows(data);
+      })
+      .catch(err => console.error('Error fetching file data:', err));
+  </script>
+</body>
+</html>
