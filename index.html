@@ -1,65 +1,137 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database Website</title>
-    <style>
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 90%;
-            margin: auto;
-            padding: 20px 0;
-        }
-        .header {
-            text-align: center;
-            padding: 20px 0;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .card {
-            background-color: #1a1a1a;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .card a {
-            color: #ffcc00;
-            text-decoration: none;
-        }
-        .card a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>100GIGSFORYOURHEADTOP</title>
+  <style>
+    /* Global Styles */
+    body {
+      background-color: #000000;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    /* Header */
+    header {
+      background-color: #1a1a1a;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    /* Container for main content */
+    .container {
+      padding: 20px;
+    }
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #333;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background-color: #1a1a1a;
+    }
+    /* Hover Effects */
+    tr:hover {
+      background-color: #333333;
+    }
+    /* Icon Styles */
+    .icon {
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    /* Expandable Icon */
+    .expand-icon {
+      cursor: pointer;
+      margin-right: 5px;
+      font-size: 12px;
+      vertical-align: middle;
+    }
+    /* Download Button */
+    .download-btn {
+      background-color: #ffcc00;
+      color: #000000;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .download-btn:hover {
+      background-color: #e6b800;
+    }
+    /* Optional grid icon for view options */
+    .grid-icon {
+      cursor: pointer;
+      margin-left: 5px;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Database Website</h1>
-        </div>
-        <div class="grid">
-            <div class="card">
-                <h2>Item 1</h2>
-                <p>Description of item 1.</p>
-                <a href="#">Download</a>
-            </div>
-            <div class="card">
-                <h2>Item 2</h2>
-                <p>Description of item 2.</p>
-                <a href="#">Download</a>
-            </div>
-            <!-- Add more cards as needed -->
-        </div>
-    </div>
+  <!-- Header Section -->
+  <header>
+    <h1>100GIGSFORYOURHEADTOP</h1>
+  </header>
+
+  <!-- Main Content Area -->
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Date and Time</th>
+          <th>Size</th>
+          <th>Type</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Folder Row Example -->
+        <tr>
+          <td>
+            <!-- Expandable arrow icon (static example) -->
+            <span class="expand-icon">&#9654;</span>
+            <!-- Folder icon -->
+            <span class="icon">&#128193;</span>
+            Folder1
+            <!-- Optional grid view icon for alternative view options -->
+            <span class="grid-icon">&#9776;</span>
+          </td>
+          <td>2025-03-24 10:15 AM</td>
+          <td>-</td>
+          <td>FOLDER</td>
+          <td></td>
+        </tr>
+        <!-- File Row Example -->
+        <tr>
+          <td>
+            <!-- Video file icon -->
+            <span class="icon">&#127909;</span>
+            Video1.mp4
+          </td>
+          <td>2025-03-23 08:45 AM</td>
+          <td>38MB</td>
+          <td>VIDEO</td>
+          <td>
+            <button class="download-btn">DOWNLOAD</button>
+          </td>
+        </tr>
+        <!-- Additional rows can be added here following the same structure -->
+      </tbody>
+    </table>
+  </div>
 </body>
 </html>
