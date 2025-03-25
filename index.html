@@ -1,1 +1,65 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Website</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            padding: 20px 0;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .card a {
+            color: #ffcc00;
+            text-decoration: none;
+        }
+        .card a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Database Website</h1>
+        </div>
+        <div class="grid">
+            <div class="card">
+                <h2>Item 1</h2>
+                <p>Description of item 1.</p>
+                <a href="#">Download</a>
+            </div>
+            <div class="card">
+                <h2>Item 2</h2>
+                <p>Description of item 2.</p>
+                <a href="#">Download</a>
+            </div>
+            <!-- Add more cards as needed -->
+        </div>
+    </div>
+</body>
+</html>
