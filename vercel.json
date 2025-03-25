@@ -1,8 +1,6 @@
 {
   "version": 2,
-  "public": {
-    "static": "public"
-  },
+  "public": true,
   "functions": {
     "api/*.js": {
       "runtime": "nodejs18.x"
