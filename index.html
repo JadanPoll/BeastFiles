@@ -1,85 +1,3 @@
-<?php
-/**
- * Recursively scans the specified directory and returns HTML table rows.
- *
- * @param string $dir   The directory to scan.
- * @param int    $level The current depth level for indentation.
- *
- * @return string HTML table rows.
- */
-function listDirectory($dir, $level = 0) {
-    $rows = "";
-    // Ensure the directory exists.
-    if (!is_dir($dir)) {
-        return $rows;
-    }
-    $items = scandir($dir);
-    foreach ($items as $item) {
-        if ($item === '.' || $item === '..') {
-            continue;
-        }
-        $fullPath = $dir . DIRECTORY_SEPARATOR . $item;
-        $indent = str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;", $level);
-        $date = date("Y-m-d H:i:s", filemtime($fullPath));
-        if (is_dir($fullPath)) {
-            // Folder row
-            $rows .= "<tr>";
-            $rows .= "<td>$indent<span class='expand-icon'>&#9654;</span> <span class='icon'>&#128193;</span> $item</td>";
-            $rows .= "<td>$date</td>";
-            $rows .= "<td>-</td>";
-            $rows .= "<td>FOLDER</td>";
-            $rows .= "<td></td>";
-            $rows .= "</tr>";
-            // Recursively list the folder's contents.
-            $rows .= listDirectory($fullPath, $level + 1);
-        } else {
-            // File row: determine file type based on extension.
-            $extension = strtolower(pathinfo($item, PATHINFO_EXTENSION));
-            $type = "FILE";
-            $icon = "&#128196;"; // generic file icon
-            if (in_array($extension, ["mp4", "avi", "mkv"])) {
-                $type = "VIDEO";
-                $icon = "&#127909;";
-            }
-            $size = filesize($fullPath);
-            $formattedSize = formatSizeUnits($size);
-            $rows .= "<tr>";
-            $rows .= "<td>$indent<span class='icon'>$icon</span> $item</td>";
-            $rows .= "<td>$date</td>";
-            $rows .= "<td>$formattedSize</td>";
-            $rows .= "<td>$type</td>";
-            // The download link points to the file's relative path.
-            $rows .= "<td><a class='download-btn' href='$fullPath' download>DOWNLOAD</a></td>";
-            $rows .= "</tr>";
-        }
-    }
-    return $rows;
-}
-
-/**
- * Formats a size in bytes into a human-readable string.
- *
- * @param int $bytes
- *
- * @return string
- */
-function formatSizeUnits($bytes) {
-    if ($bytes >= 1073741824) {
-        $bytes = number_format($bytes / 1073741824, 2) . ' GB';
-    } elseif ($bytes >= 1048576) {
-        $bytes = number_format($bytes / 1048576, 2) . ' MB';
-    } elseif ($bytes >= 1024) {
-        $bytes = number_format($bytes / 1024, 2) . ' KB';
-    } elseif ($bytes > 1) {
-        $bytes = $bytes . ' bytes';
-    } elseif ($bytes == 1) {
-        $bytes = $bytes . ' byte';
-    } else {
-        $bytes = '0 bytes';
-    }
-    return $bytes;
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,13 +7,12 @@ function formatSizeUnits($bytes) {
   <style>
     /* Global Styles */
     body {
-      background-color: #000000;
-      color: #ffffff;
+      background-color: #000;
+      color: #fff;
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
     }
-    /* Header */
     header {
       background-color: #1a1a1a;
       padding: 20px;
@@ -106,11 +23,9 @@ function formatSizeUnits($bytes) {
       margin: 0;
       font-size: 24px;
     }
-    /* Container for main content */
     .container {
       padding: 20px;
     }
-    /* Table Styles */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -124,26 +39,22 @@ function formatSizeUnits($bytes) {
     th {
       background-color: #1a1a1a;
     }
-    /* Hover Effects */
     tr:hover {
-      background-color: #333333;
+      background-color: #333;
     }
-    /* Icon Styles */
     .icon {
       margin-right: 10px;
       vertical-align: middle;
     }
-    /* Expandable Icon */
     .expand-icon {
       cursor: pointer;
       margin-right: 5px;
       font-size: 12px;
       vertical-align: middle;
     }
-    /* Download Button */
     .download-btn {
       background-color: #ffcc00;
-      color: #000000;
+      color: #000;
       border: none;
       padding: 5px 10px;
       border-radius: 4px;
@@ -154,22 +65,12 @@ function formatSizeUnits($bytes) {
     .download-btn:hover {
       background-color: #e6b800;
     }
-    /* Optional grid icon for view options (if needed) */
-    .grid-icon {
-      cursor: pointer;
-      margin-left: 5px;
-      font-size: 14px;
-      vertical-align: middle;
-    }
   </style>
 </head>
 <body>
-  <!-- Header Section -->
   <header>
     <h1>100GIGSFORYOURHEADTOP</h1>
   </header>
-
-  <!-- Main Content Area -->
   <div class="container">
     <table>
       <thead>
@@ -181,10 +82,73 @@ function formatSizeUnits($bytes) {
           <th>Action</th>
         </tr>
       </thead>
-      <tbody>
-        <?php echo listDirectory("DATABASE"); ?>
+      <tbody id="file-table">
+        <!-- Table rows will be populated here by JS -->
       </tbody>
     </table>
   </div>
+  <script>
+    // Utility to format file sizes.
+    function formatSizeUnits(bytes) {
+      if (bytes >= 1073741824) {
+        return (bytes / 1073741824).toFixed(2) + ' GB';
+      } else if (bytes >= 1048576) {
+        return (bytes / 1048576).toFixed(2) + ' MB';
+      } else if (bytes >= 1024) {
+        return (bytes / 1024).toFixed(2) + ' KB';
+      } else if (bytes > 1) {
+        return bytes + ' bytes';
+      } else if (bytes == 1) {
+        return bytes + ' byte';
+      } else {
+        return '0 bytes';
+      }
+    }
+    
+    // Recursively build table rows from directory data.
+    function buildRows(items, level = 0) {
+      let html = '';
+      items.forEach(item => {
+        const indent = '&nbsp;'.repeat(level * 4);
+        const date = new Date(item.date).toLocaleString();
+        const size = item.size ? formatSizeUnits(item.size) : '-';
+        let icon = '';
+        let action = '';
+        
+        if (item.type === 'FOLDER') {
+          // Folder icon with an expandable arrow (static example).
+          icon = '<span class="expand-icon">&#9654;</span> <span class="icon">&#128193;</span>';
+        } else {
+          // File icon.
+          icon = '<span class="icon">&#128196;</span>';
+          // Download link.
+          action = `<a class="download-btn" href="${item.path}" download>DOWNLOAD</a>`;
+        }
+        
+        html += `<tr>
+                    <td>${indent}${icon} ${item.name}</td>
+                    <td>${date}</td>
+                    <td>${size}</td>
+                    <td>${item.type}</td>
+                    <td>${action}</td>
+                 </tr>`;
+                 
+        // If the item is a folder with children, add them recursively.
+        if (item.type === 'FOLDER' && item.children && item.children.length > 0) {
+          html += buildRows(item.children, level + 1);
+        }
+      });
+      return html;
+    }
+    
+    // Fetch the directory structure from the server.
+    fetch('/files')
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.getElementById('file-table');
+        tableBody.innerHTML = buildRows(data);
+      })
+      .catch(err => console.error('Error fetching file data:', err));
+  </script>
 </body>
 </html>
