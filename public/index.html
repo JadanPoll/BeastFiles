@@ -142,7 +142,7 @@
     }
     
     // Fetch the directory structure from the server.
-    fetch('/files')
+    fetch('/api/files')
       .then(response => response.json())
       .then(data => {
         const tableBody = document.getElementById('file-table');
